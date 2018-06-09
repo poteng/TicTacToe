@@ -1,6 +1,7 @@
 # tic tac toe
 
 This program uses Alpha-Beta-Pruning and MinMax-A-B algorithms to implement a tic-tac-toe game platform.
+
 The user can choose from three different evaluation functions to be computer's "strategy". The computers will use those strategies to play against each other.
 
 
