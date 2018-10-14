@@ -1,4 +1,4 @@
-# tic tac toe
+# AI played Tic Tac Toe game
 
 This program uses Alpha-Beta-Pruning and MinMax-A-B algorithms to implement a tic-tac-toe game platform.
 
