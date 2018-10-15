@@ -169,9 +169,7 @@ string move_gen(nodeMove* parent, bool player)
 }
 
 
-
-
-
+//evaluation function form textbook
 int evaluationText(nodeMove* position, bool player)
 {
 
@@ -285,6 +283,7 @@ int evaluationText(nodeMove* position, bool player)
 }
 
 
+//evaluation function created by Po-Teng
 int evaluationPodeng(nodeMove* nodeCurrent, bool player)
 {
     int* grip = nodeCurrent->infoBoard;
@@ -296,14 +295,6 @@ int evaluationPodeng(nodeMove* nodeCurrent, bool player)
     int valueWin;
     int lose = 0;
     int valueLose;
-
-//display_board(grip);
-for (int i = 0; i<9; i++)
-{
-    //cout << grip[i]<<" ";
-}
-//cout<<endl;
-
 
     if (player)
     {
@@ -359,13 +350,6 @@ for (int i = 0; i<9; i++)
         if (dia[i] == valueLose) { lose -= 20; }
     }
 
-if((5 + win + center + countCheck)>7)
-{
-    //display_board(grip);
-}
-
-//cout<<"playerMark = "<< playerMark<<" return "<< (5 + win + lose + center + countCheck)<<endl;
-
     if (depthMax%2 == 1)
     {
         return 5 + win + lose + center + countCheck;
@@ -374,10 +358,10 @@ if((5 + win + center + countCheck)>7)
     {
         return (5 + win + lose + center + countCheck);
     }
-
 }
 
 
+//Evaluation function created by Tommy
 int evaluationTommy(nodeMove* position, bool player)
 {
     int mark = 0;
@@ -420,13 +404,13 @@ int evaluationTommy(nodeMove* position, bool player)
     if (grid[7] == mark)
         score = score + 1;
 
-    //cout << "Eval = " << score << endl;
-
     if (player == false)
         score = -1 * score;
 
     return score;
 }
+
+
 
 int evaluation(nodeMove* nodeCurrent, bool player)
 {
@@ -491,7 +475,6 @@ result max_value(nodeMove* nodeCurrent, int depth, bool player)
 
         resultCurrent.value = evaluation(nodeCurrent, player);
         resultCurrent.path = int_to_string( nodeCurrent->number );
-            //cout << "Leave #"<<resultCurrent.path<<" value = "<<resultCurrent.value<<endl;
         return resultCurrent;
     }
     else if (depth < depthMax)
@@ -522,21 +505,15 @@ result max_value(nodeMove* nodeCurrent, int depth, bool player)
                 resultSucc = min_value(nodeCurrent->nodeChild[ char_to_int( successors[i] ) ], depth + 1, player);
                 valueNew = resultSucc.value;
 
-                //
                 if (valueNew > scoreBest)
                 {
-                        //cout << "max choose " << valueNew<<" than " << scoreBest<<" depth = "<<depth<<endl;
                     scoreBest = valueNew;
                     resultCurrent.path =  int_to_string(i);
-                        //cout << "i = "<<i<<endl;
                 }
 
-                if (scoreBest >= beta)
+                if (scoreBest >= beta)	//Pruning in max_value
                 {
                     resultCurrent.value = scoreBest;
-                   cout << "\nPruning in max_value.  ";
-//cout << "resultCurrent.value = " << resultCurrent.value << ", #" << i << " node. depth = "<<depth<<endl;
-
                     if (depth != 0)
                     {
                         return resultCurrent;
@@ -549,7 +526,6 @@ result max_value(nodeMove* nodeCurrent, int depth, bool player)
             }
 
             resultCurrent.value = scoreBest;
-            //resultCurrent.path = int_to_string( resultSucc->number );
             return resultCurrent;
         }
     }
@@ -563,10 +539,8 @@ result min_value(nodeMove* nodeCurrent, int depth, bool player)
     result resultSucc;
     if (depth >= depthMax || CheckWin(nodeCurrent, player) || CheckWin(nodeCurrent, !player)) //leaves
     {
-
         resultCurrent.value = evaluation(nodeCurrent, player);
         resultCurrent.path = int_to_string( nodeCurrent->number );
-                //cout << "Leave #"<<resultCurrent.path<<" value = "<<resultCurrent.value<<endl;
         return resultCurrent;
     }
     else if (depth < depthMax)
@@ -599,16 +573,13 @@ result min_value(nodeMove* nodeCurrent, int depth, bool player)
                 //
                 if (valueNew < scoreBest)
                 {
-                        //cout << "min choose " << valueNew<<endl;
                     scoreBest = valueNew;
                     resultCurrent.path = int_to_string(i);
                 }
 
-                if (scoreBest <= alpha)
+                if (scoreBest <= alpha)		//Pruning in min_value
                 {
                     resultCurrent.value = scoreBest;
-                    cout << "\nPruning in min_value.  ";
-                        //cout << "Depth = " << depth << ", #" << i << " node.\n";
                     return resultCurrent;
                 }
                 if (scoreBest < beta)
@@ -624,23 +595,6 @@ result min_value(nodeMove* nodeCurrent, int depth, bool player)
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 result alpha_beta_search_old(nodeMove* nodeCurrent, int depth, bool player)
@@ -664,7 +618,6 @@ result alpha_beta_search_old(nodeMove* nodeCurrent, int depth, bool player)
         //if successors is empty, return current values
         if (successors == "")
         {
-                        //cout << "successors == \"\", end." <<endl;
             resultCurrent.value = evaluation(nodeCurrent, player);
             resultCurrent.path = "";
             return resultCurrent;
@@ -673,21 +626,14 @@ result alpha_beta_search_old(nodeMove* nodeCurrent, int depth, bool player)
         {
             scoreBest = -999999; //best score for any element in successors
 
-                        //cout << "depth = "<<depth<<endl;
-
             //assume the best succ is the first child
             pathBest = "0";
 
             for (int i = 0; i < successors.length(); i++)
             {
                 //convert the char in successors[i] to int
-                            //cout << "succ #"<<successors[i]<<endl;
-
                 resultSucc = alpha_beta_search(nodeCurrent->nodeChild[ char_to_int( successors[i] ) ], depth + 1, !player);
-                            //cout << "resultSucc.value = "<<resultSucc.value<<endl;
                 valueNew = -(resultSucc.value);
-                            //cout << "Is "<<valueNew<<" > "<<scoreBest<<"?\n";
-
 
                 //As the root also gets the reverse value, we choose the smaller one.
                 if (valueNew > scoreBest)
@@ -714,10 +660,6 @@ result alpha_beta_search_old(nodeMove* nodeCurrent, int depth, bool player)
         resultCurrent.value = evaluation(nodeCurrent, player);
         cout << "eval for #"<<nodeCurrent->number<<" node is "<<resultCurrent.value<<endl<<endl;
         resultCurrent.path = "";
-        if (nodeCurrent->number == 5)
-        {
-            //display_board(nodeCurrent->infoBoard);
-        }
 
         return resultCurrent;
     }
@@ -754,7 +696,6 @@ bool CheckWin(nodeMove *position, bool player)
     else if (grid[0] == playmark && grid[4] == playmark && grid[8] == playmark)
         win = true;
 
-
     return win;
 }
 
@@ -771,7 +712,6 @@ void play(nodeMove *&root)
     {
         root->infoBoard[i] = 2;
     }
-
 
     //start the game
     display_board(root->infoBoard);
@@ -795,7 +735,6 @@ void play(nodeMove *&root)
         player = !player;
         countMove++;
 
-
         cout << totalCheckEveryTurn << " possibilities were checked.\n";
         totalCheckEveryTurn = 0;
     }
@@ -812,13 +751,8 @@ void play(nodeMove *&root)
     {
         cout << "\n\nGame Ends. Draw\n\n";
     }
-
-
-
-
+	
     //decide which move to make
-
-
     //make the move and update the board
 
     return;
