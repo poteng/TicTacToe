@@ -24,7 +24,7 @@ The supported depths are 2 and 4 only.
 
 ## Installation
 
-Build and run the cpp file.
+Build and run the [cpp file](main.cpp).
 
 When the program starts:
 
