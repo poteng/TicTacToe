@@ -2,9 +2,7 @@
 #include <string>
 #include <sstream>
 
-
 using namespace std;
-
 
 struct nodeMove
 {
@@ -15,11 +13,9 @@ struct nodeMove
 
 struct result
 {
-    int value;
+    int value{};
     string path;
 };
-
-
 
 int depthMax = 4; //the maximum depth for this algorithm
 int widthMax = 9; //the maximum possible moves in each move
@@ -32,15 +28,6 @@ int chooseEvaluationP1 = 0;
 int chooseEvaluationP2 = 0;
 
 int totalCheckEveryTurn = 0;
-
-
-void test()
-{
-    sumTest++;
-    cout <<"this #"<<sumTest<<endl;
-}
-
-
 
 
 int char_to_int(char a)
@@ -59,7 +46,7 @@ string int_to_string(int a)
 
 
 //display the board
-void display_board(int* listBoard)
+void display_board(const int* listBoard)
 {
     for (int i = 0; i < widthMax; i++)
     {
@@ -92,15 +79,15 @@ int create_tree(nodeMove*& parent, int* currentBoard, int depth)
 
     if (depth <= 0) { return 1; }   //reach the depth limit
 
-    if (parent == NULL) //create root
+    if (parent == nullptr) //create root
     {
-        nodeMove* nodeNew = new nodeMove;
+        auto * nodeNew = new nodeMove;
         parent = nodeNew;
         parent->number = 0;
         for (int i = 0; i < widthMax; i++)
         {
             parent->infoBoard[i] = 0;
-            parent->nodeChild[i] = NULL;
+            parent->nodeChild[i] = nullptr;
         }
     }
 
@@ -108,7 +95,7 @@ int create_tree(nodeMove*& parent, int* currentBoard, int depth)
     //(widthMax - depthMax + depth) will be 9, 8, 7, 6 ... etc
     for (int i = 0; i < (widthMax - depthMax + depth); i++)
     {
-        nodeMove* nodeNew = new nodeMove;
+        auto * nodeNew = new nodeMove;
         nodeNew->number = i;
         parent->nodeChild[i] = nodeNew;
         sum += create_tree(nodeNew, currentBoard, depth - 1);
@@ -125,7 +112,7 @@ void delete_tree(){}
 
 string move_gen(nodeMove* parent, bool player)
 {
-    string stringSucc = "";
+    string stringSucc;
     int countNode = 0;  //which child to work with
 
     //read parent board
@@ -142,7 +129,7 @@ string move_gen(nodeMove* parent, bool player)
                 {
                     //put next move depends on player
                     //we don't have 9 children in each level so it's not 9 times
-                    if (player == true)
+                    if (player)
                     {
                         parent->nodeChild[countNode]->infoBoard[j] = 3;
                     }
@@ -172,7 +159,6 @@ string move_gen(nodeMove* parent, bool player)
 //evaluation function form textbook
 int evaluationText(nodeMove* position, bool player)
 {
-
     int playblock,
         oppblock;
 
@@ -274,12 +260,10 @@ int evaluationText(nodeMove* position, bool player)
     else if (grid[2] * grid[4] * grid[6] == 50)
         score = -20;
 
-    if (player == false)
+    if (!player)
         score = -1 * score;
 
     return score;
-
-
 }
 
 
@@ -350,14 +334,7 @@ int evaluationPodeng(nodeMove* nodeCurrent, bool player)
         if (dia[i] == valueLose) { lose -= 20; }
     }
 
-    if (depthMax%2 == 1)
-    {
-        return 5 + win + lose + center + countCheck;
-    }
-    else
-    {
-        return (5 + win + lose + center + countCheck);
-    }
+    return 5 + win + lose + center + countCheck;
 }
 
 
@@ -370,7 +347,7 @@ int evaluationTommy(nodeMove* position, bool player)
 
     int* grid;
 
-    if (player == true)
+    if (player)
        mark = 3;
     else
        mark = 5;
@@ -404,18 +381,17 @@ int evaluationTommy(nodeMove* position, bool player)
     if (grid[7] == mark)
         score = score + 1;
 
-    if (player == false)
+    if (!player)
         score = -1 * score;
 
     return score;
 }
 
 
-
 int evaluation(nodeMove* nodeCurrent, bool player)
 {
     totalCheckEveryTurn++;
-    if (player == true)    //player1
+    if (player)    //player1
     {
         if (chooseEvaluationP1 == 1)
         {
@@ -430,8 +406,7 @@ int evaluation(nodeMove* nodeCurrent, bool player)
             return evaluationTommy(nodeCurrent, player);
         }
     }
-    else if (player == false)    //player2
-    {
+    else {       //player2
         if (chooseEvaluationP2 == 1)
         {
             return evaluationText(nodeCurrent, player);
@@ -466,7 +441,6 @@ result alpha_beta_search(nodeMove* nodeCurrent, int depth, bool player)
 
 result max_value(nodeMove* nodeCurrent, int depth, bool player)
 {
-
     result resultCurrent;
     result resultSucc;
 
@@ -479,7 +453,7 @@ result max_value(nodeMove* nodeCurrent, int depth, bool player)
     }
     else if (depth < depthMax)
     {
-        string successors ="";
+        string successors;
 
         int scoreBest = 0;
         int valueNew = 0;
@@ -490,7 +464,7 @@ result max_value(nodeMove* nodeCurrent, int depth, bool player)
         successors = move_gen(nodeCurrent, player);
 
         //if successors is empty, return current values
-        if (successors == "")
+        if (successors.empty())
         {
             resultCurrent.value = evaluation(nodeCurrent, player);
             resultCurrent.path = int_to_string( nodeCurrent->number );
@@ -534,7 +508,6 @@ result max_value(nodeMove* nodeCurrent, int depth, bool player)
 
 result min_value(nodeMove* nodeCurrent, int depth, bool player)
 {
-
     result resultCurrent;
     result resultSucc;
     if (depth >= depthMax || CheckWin(nodeCurrent, player) || CheckWin(nodeCurrent, !player)) //leaves
@@ -545,7 +518,7 @@ result min_value(nodeMove* nodeCurrent, int depth, bool player)
     }
     else if (depth < depthMax)
     {
-        string successors ="";
+        string successors;
 
         int scoreBest = 0;
         int valueNew = 0;
@@ -556,7 +529,7 @@ result min_value(nodeMove* nodeCurrent, int depth, bool player)
         successors = move_gen(nodeCurrent, !player);
 
         //if successors is empty, return current values
-        if (successors == "")
+        if (successors.empty())
         {
             resultCurrent.value = evaluation(nodeCurrent, player);
             resultCurrent.path = int_to_string( nodeCurrent->number );
@@ -597,79 +570,11 @@ result min_value(nodeMove* nodeCurrent, int depth, bool player)
 }
 
 
-result alpha_beta_search_old(nodeMove* nodeCurrent, int depth, bool player)
-{
-    result resultCurrent;
-    result resultSucc;
-
-    if (depth < depthMax)
-    {
-        string successors ="";
-
-        int scoreBest = 0;
-        int valueNew = 0;
-        string pathBest = "";
-
-        //expand the node
-        //move_gen gives a list of nodes
-
-        successors = move_gen(nodeCurrent, player);
-
-        //if successors is empty, return current values
-        if (successors == "")
-        {
-            resultCurrent.value = evaluation(nodeCurrent, player);
-            resultCurrent.path = "";
-            return resultCurrent;
-        } //no more move
-        else //if it's not empty, examine each element in successors
-        {
-            scoreBest = -999999; //best score for any element in successors
-
-            //assume the best succ is the first child
-            pathBest = "0";
-
-            for (int i = 0; i < successors.length(); i++)
-            {
-                //convert the char in successors[i] to int
-                resultSucc = alpha_beta_search(nodeCurrent->nodeChild[ char_to_int( successors[i] ) ], depth + 1, !player);
-                valueNew = -(resultSucc.value);
-
-                //As the root also gets the reverse value, we choose the smaller one.
-                if (valueNew > scoreBest)
-                {
-                    scoreBest = valueNew;
-                    pathBest = int_to_string(nodeCurrent->nodeChild[i]->number);
-                }
-            }
-
-            //append current node to the best path returned from children
-            //convert int to string so it can be appended to another string
-
-            cout << "depth = "<<depth << " pathBest = " <<pathBest<<" + "<<resultSucc.path<<" = "<< pathBest<<endl;
-            pathBest = pathBest + resultSucc.path;
-
-            resultCurrent.value = scoreBest;
-            resultCurrent.path = pathBest;
-
-            return resultCurrent;
-        }
-    }
-    else if (depth >= depthMax) //leaves
-    {
-        resultCurrent.value = evaluation(nodeCurrent, player);
-        cout << "eval for #"<<nodeCurrent->number<<" node is "<<resultCurrent.value<<endl<<endl;
-        resultCurrent.path = "";
-
-        return resultCurrent;
-    }
-}
-
 bool CheckWin(nodeMove *position, bool player)
 {
     int playmark;
 
-    if (player == true)
+    if (player)
         playmark = 3;
     else
         playmark = 5;
@@ -759,31 +664,23 @@ void play(nodeMove *&root)
 
 }
 
-
-
-bool Opposite(bool player)
+void test()
 {
-    if (player == true)
-        return false;
-    else
-        return true;
+    sumTest++;
+    cout <<"this #"<<sumTest<<endl;
 }
-
 
 
 int main()
 {
-
     int board[9] = {5, 5, 2, 5, 3, 5, 5, 5, 5}; //for testing
-    nodeMove* root = NULL;
+    nodeMove* root = nullptr;
     int sumNode = 0;
-
-    //display_board(board);
 
     sumNode = create_tree(root, board, depthMax);
     cout << sumNode << " nodes created." << endl;
 
-    cout << "Enter maximum depth:\n";
+    cout << "Enter maximum depth (2 or 4):\n";
     cin >> depthMax;
 
     cout << "Choose evaluation function for Player1:\n1. Text Book  2.Po-Teng\'s  3.Thomas\'s\n";
@@ -791,9 +688,7 @@ int main()
     cout << "Choose evaluation function for Player2:\n1. Text Book  2.Po-Teng\'s  3.Thomas\'s\n";
     cin >> chooseEvaluationP2;
 
-
     play(root);
-
 
     delete_tree();
     return 0;
