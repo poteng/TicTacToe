@@ -9,7 +9,7 @@ The computers will use those strategies to play against each other.
 ## Strategies
 Currently, the program supports three different strategies.
 
-#### Textbook
+#### Textbook's
 Evaluation function form textbook
 
 #### Po-Teng's
@@ -19,7 +19,7 @@ Evaluation function created by Po-Teng
 Evaluation function created by Tommy
 
 ## Depth of algorithm
-The supported depths are 2 and 4 only.
+Currently, the supported depths are 2 and 4 only.
 
 
 ## Installation
@@ -36,3 +36,6 @@ Player 1 will be the first player and use X mark.
 
 The rest of process is automatic. 
 
+
+## Detailed Report
+More information of this program can be found by checking [Report](Report.pdf)
